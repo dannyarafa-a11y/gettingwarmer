@@ -42,6 +42,12 @@
   --primary: #ff8a1f; --primary-text: #2a0a12; --alt: #e0262f; --alt-text: #fff6f1;
   --blob1: rgba(224,38,47,.30); --blob2: rgba(255,138,31,.38); --blob3: rgba(255,200,60,.35);
 }
+:root[data-pack="dark"] {
+  --bg: #160818; --text: #ffd1e8; --line: #ffd1e8; --paper: #2b1030;
+  --primary: #ff2e88; --primary-text: #160818; --alt: #9b5cff; --alt-text: #ffffff;
+  --blob1: rgba(255,46,136,.22); --blob2: rgba(155,92,255,.22); --blob3: rgba(255,122,184,.14);
+  color-scheme: dark;
+}
 :root[data-pack="crew"] {
   --bg: #d9f8e8; --text: #0e2a26; --line: #0e2a26; --paper: #ffffff;
   --primary: #c6f432; --primary-text: #0e2a26; --alt: #ff5e5b; --alt-text: #ffffff;
@@ -78,6 +84,11 @@
     linear-gradient(315deg, #ff8a1f 25%, transparent 25%), linear-gradient(45deg, #ff8a1f 25%, transparent 25%);
   background-size: 28px 28px; background-position: -14px 0, -14px 0, 0 0, 0 0;
   --em-bg: #2a0a12; --em-fg: #ff8a1f;
+}
+.pat-dark {
+  background-color: #160818;
+  background-image: repeating-linear-gradient(45deg, #ff2e88 0 5px, transparent 5px 20px), repeating-linear-gradient(-45deg, rgba(155,92,255,.7) 0 2px, transparent 2px 20px);
+  --em-bg: #ff2e88; --em-fg: #160818;
 }
 .pat-crew {
   background-color: #19b5a5;
@@ -221,6 +232,14 @@ body {
   transform: rotate(-5deg);
   white-space: nowrap;
 }
+.adult-badge {
+  position: absolute; top: 12px; right: 12px;
+  background: #ff2e88; color: #160818;
+  border: var(--stroke) solid var(--line); border-radius: 999px;
+  padding: 5px 9px; font: 800 12px/1 var(--font-ui);
+  transform: rotate(8deg);
+}
+.placeholder .btn { margin-top: 16px; }
 .tile-meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .tile-meta span { font-size: 14px; font-weight: 500; line-height: 1.35; }
 .tile-meta small { font: 800 12px/1 var(--font-ui); letter-spacing: .06em; text-transform: uppercase; opacity: .7; }
@@ -429,7 +448,7 @@ kbd { font-family: var(--font-ui); border: 2px solid var(--line); border-radius:
   <section class="view" id="home">
     <div class="brand">
       <h1>getting<br><span>warmer</span></h1>
-      <div class="sticker">6 packs</div>
+      <div class="sticker">7 packs</div>
       <p class="lede">Pick a pack. Pull a card, answer it yourself, then turn it around and pass it across the table.</p>
     </div>
     <div class="shelf" id="shelf"></div>
@@ -648,7 +667,7 @@ const PACKS = [
         "What makes you weak at the knees?",
         "Have you ever written a love letter? Who was it for?"
       ] },
-      { key: "hot", tag: "Extra hot", bg: "#2a0a12", fg: "#ffb18a", qs: [
+      { key: "hot", tag: "Hot", bg: "#2a0a12", fg: "#ffb18a", qs: [
         "What's the most attractive thing someone can say to you?",
         "What's a dating rule you swore by and then broke?",
         "What's the riskiest text you've ever sent?",
@@ -673,6 +692,95 @@ const PACKS = [
         "What's the most jealous you've ever been?",
         "What would you never forgive in a relationship?",
         "What makes you feel most wanted?"
+      ] }
+    ] },
+  { id: "dark", name: "After Dark", tagline: "18+ only. Legitimately dirty.", emblem: "after<br>dark", adult: true,
+    sections: [
+      { key: "tease", tag: "Tease", bg: "#ff7ab8", fg: "#160818", qs: [
+        "What's the most attractive thing someone could whisper in your ear?",
+        "Where do you most like to be kissed?",
+        "Which piece of clothing is sexiest on someone?",
+        "What's your biggest turn-on that has nothing to do with looks?",
+        "What's the most seductive song you know?",
+        "Lights on or lights off?",
+        "What's a sexy habit of yours nobody knows about?",
+        "What's the flirtiest text you've ever received?",
+        "Morning, afternoon, or night: when are you most in the mood?",
+        "What look can someone give you that says everything?",
+        "What's your favorite part of the buildup: words, touch, or anticipation?",
+        "Slow and romantic, or fast and wild?",
+        "Which part of your body do you love being complimented on?",
+        "What's the hottest thing someone has ever worn for you?",
+        "What scent drives you a little crazy?",
+        "What's the best kiss you've ever had, and what made it so good?",
+        "What do you find sexy that you'd never put on a dating profile?",
+        "Have you ever had a dream about someone you know that you'd never admit to them?",
+        "What's the most suggestive thing you've ever said by accident?",
+        "Which is sexier: being chased or doing the chasing?",
+        "What's your favorite way to set the mood?",
+        "Describe your ideal night in, using only three words.",
+        "What's the most romantic place you've ever been intimate?",
+        "What's one compliment that would get you instantly in the mood?"
+      ] },
+      { key: "dirty", tag: "Dirty", bg: "#ff2e88", fg: "#160818", qs: [
+        "What's your favorite position, and why?",
+        "What's the most adventurous place you've ever hooked up?",
+        "What's a fantasy you've never told anyone?",
+        "What's the best sex you've ever had? No names.",
+        "Have you ever had a one-night stand? Would you do it again?",
+        "What's something you've always wanted to try in bed?",
+        "What's the kinkiest thing you've ever done?",
+        "How do you feel about toys?",
+        "What's one thing a partner did that you still think about?",
+        "What's your biggest turn-off in bed?",
+        "Have you ever sent a nude? Any regrets?",
+        "Have you ever been walked in on?",
+        "Rough or gentle?",
+        "Dirty talk: into it, and are you any good?",
+        "What's the longest you've ever gone without?",
+        "Have you ever faked it?",
+        "What's the fastest you've gone from meeting someone to hooking up?",
+        "What role-play scenario would you actually try?",
+        "Have you ever had sex somewhere you could have been caught?",
+        "What's the most times in one night?",
+        "What are you surprisingly good at in bed?",
+        "Who at this table do you think has the wildest sex life?",
+        "Car, shower, or beach: which have you tried?",
+        "Have you ever hooked up with someone you really shouldn't have?",
+        "What's the strangest thing that's ever turned you on?",
+        "Handcuffs or blindfold?",
+        "Have you ever had a friends-with-benefits situation? How did it end?",
+        "What's the dirtiest text you've ever sent?",
+        "What's the best compliment you've ever gotten in bed?",
+        "Quickie or all night?",
+        "What's on your sexual bucket list?",
+        "Have you ever slept with someone on the first date?"
+      ] },
+      { key: "confess", tag: "Confess", bg: "#9b5cff", fg: "#ffffff", qs: [
+        "What's the most embarrassing thing that's happened to you during sex?",
+        "Have you ever hooked up with someone from work?",
+        "Body count: single digits, double digits, or pass?",
+        "Have you ever kissed someone of the same gender?",
+        "What's the worst hookup you've ever had?",
+        "Have you ever gotten back with an ex just for the physical part?",
+        "Have you ever had a crush on a friend's partner?",
+        "What's the most daring photo you've ever taken?",
+        "Have you ever hooked up at a wedding or a party?",
+        "Have you ever had a threesome, or wanted one?",
+        "What's the worst excuse you've used to leave after a hookup?",
+        "Have you ever been caught sexting?",
+        "What's the craziest thing you've done to get someone you wanted?",
+        "Have you ever joined the mile-high club, or tried to?",
+        "Which hookup would you love to redo?",
+        "Who have you fantasized about the longest?",
+        "Have you ever watched something you'd never admit to?",
+        "Where was your hottest kiss, and who was it with?",
+        "What's in your search history that you'd hate anyone to see?",
+        "Have you ever had a vacation fling?",
+        "What's the riskiest thing you've done in public with someone?",
+        "What's a secret about your sex life you've never told anyone?",
+        "Have you ever hooked up with two different people in the same week?",
+        "Have you ever said someone else's name at the wrong moment?"
       ] }
     ] },
   { id: "crew", name: "The Crew", tagline: "For the group chat, in person.", emblem: "the<br>crew",
@@ -1044,12 +1152,14 @@ const D = ms => reduced ? 1 : ms;
 let pack = PACKS[0];
 let levels = new Set();
 let order = [], pos = 0, history = [], view = -1, current = null;
+let adultOk = false;
+const locked = () => pack.adult && !adultOk;
 
 /* ---------- Shelf ---------- */
 function renderShelf() {
   $("#shelf").innerHTML = PACKS.map(p => `
     <button class="pack-tile" data-pack="${p.id}" aria-label="Open the ${p.name} pack">
-      <div class="tile-art pat-${p.id}"><span class="tile-badge">${p.name}</span></div>
+      <div class="tile-art pat-${p.id}"><span class="tile-badge">${p.name}</span>${p.adult ? '<span class="adult-badge">18+</span>' : ""}</div>
       <div class="tile-meta"><span>${p.tagline}</span><small>${p.cards.length} cards</small></div>
     </button>`).join("");
   document.querySelectorAll(".pack-tile").forEach(t => t.addEventListener("click", () => openPack(t.dataset.pack)));
@@ -1079,8 +1189,15 @@ function openPack(id) {
   }));
   if (current) { current.remove(); current = null; }
   restart(true);
+  if (locked()) gate();
   show("game");
   try { localStorage.setItem("gw-pack", pack.id); } catch (e) {}
+}
+
+function gate() {
+  setPlaceholder("18+ only", "Everyone playing should be an adult and up for it. Anyone can pass on any card, no explanation needed.<br><button class=\"btn primary\" id=\"ageOk\">We're all 18+</button>");
+  renderDeck();
+  $("#ageOk").addEventListener("click", () => { adultOk = true; restart(true); });
 }
 
 function toShelf() {
@@ -1109,9 +1226,9 @@ function renderDeck() {
     deckEl.appendChild(l);
   }
   deckEl.classList.toggle("empty", left === 0);
-  deckEl.disabled = left === 0;
+  deckEl.disabled = left === 0 || locked();
   $("#deckCount").textContent = `${left} left`;
-  $("#draw").disabled = left === 0;
+  $("#draw").disabled = left === 0 || locked();
   $("#draw").textContent = left === 0 ? "No cards left" : "Draw a card";
   $("#prev").disabled = view <= 0;
   $("#next").disabled = view >= history.length - 1;
@@ -1214,7 +1331,7 @@ function exit(el, dir) {
 }
 
 function draw() {
-  if (pos >= order.length) return;
+  if (pos >= order.length || locked()) return;
   const topLayer = deckEl.querySelector(".layer.top");
   const from = (topLayer || deckEl).getBoundingClientRect();
   const card = pack.cards[order[pos++] - 1];
@@ -1280,7 +1397,7 @@ function restart(quiet) {
 /* Deck gesture: drag the top card toward the table (up on a phone) and let go to draw it. A tap also draws. */
 let deckDrag = null, suppressClick = false;
 deckEl.addEventListener("pointerdown", e => {
-  if (deckEl.disabled || e.button > 0) return;
+  if (deckEl.disabled || locked() || e.button > 0) return;
   const top = deckEl.querySelector(".layer.top");
   if (!top) return;
   suppressClick = false;
