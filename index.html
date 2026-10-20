@@ -1,0 +1,1337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Warmer">
+<meta name="theme-color" content="#efe4ff">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-512.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>*,*::before,*::after{box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;-webkit-tap-highlight-color:transparent;overscroll-behavior:none}img{max-width:100%}</style>
+<title>Getting Warmer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap">
+<style>
+/* Layout: a pack shelf (home) and a card table (game). Each pack re-skins the whole page through tokens on :root[data-pack]: page color, ink, buttons, and its own card-back pattern. Single committed look per pack, soda-can color blocking, ink outlines, hard offset shadows. */
+:root {
+  --bg: #efe4ff;
+  --text: #22113d;
+  --line: #22113d;
+  --paper: #ffffff;
+  --primary: #c6f432;
+  --primary-text: #22113d;
+  --alt: #ff7a2f;
+  --alt-text: #22113d;
+  --blob1: rgba(255,111,181,.35);
+  --blob2: rgba(198,244,50,.45);
+  --blob3: rgba(255,210,63,.45);
+  --font-display: "Bagel Fat One", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+  --font-ui: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --card-w: min(320px, 78vw);
+  --deck-w: 150px;
+  --stroke: 3px;
+  color-scheme: light;
+}
+:root[data-pack="spicy"] {
+  --bg: #ffe2d4; --text: #2a0a12; --line: #2a0a12; --paper: #fff6f1;
+  --primary: #ff8a1f; --primary-text: #2a0a12; --alt: #e0262f; --alt-text: #fff6f1;
+  --blob1: rgba(224,38,47,.30); --blob2: rgba(255,138,31,.38); --blob3: rgba(255,200,60,.35);
+}
+:root[data-pack="crew"] {
+  --bg: #d9f8e8; --text: #0e2a26; --line: #0e2a26; --paper: #ffffff;
+  --primary: #c6f432; --primary-text: #0e2a26; --alt: #ff5e5b; --alt-text: #ffffff;
+  --blob1: rgba(111,211,255,.45); --blob2: rgba(255,94,91,.28); --blob3: rgba(198,244,50,.5);
+}
+:root[data-pack="deep"] {
+  --bg: #12173a; --text: #f6e7b0; --line: #f6e7b0; --paper: #232b5c;
+  --primary: #ffe27a; --primary-text: #12173a; --alt: #b9a6ff; --alt-text: #12173a;
+  --blob1: rgba(185,166,255,.20); --blob2: rgba(79,209,197,.16); --blob3: rgba(255,226,122,.16);
+  color-scheme: dark;
+}
+:root[data-pack="takes"] {
+  --bg: #fff1c9; --text: #1d1d1d; --line: #1d1d1d; --paper: #ffffff;
+  --primary: #3b5bff; --primary-text: #ffffff; --alt: #ff7a2f; --alt-text: #1d1d1d;
+  --blob1: rgba(255,122,47,.35); --blob2: rgba(59,91,255,.22); --blob3: rgba(255,214,0,.4);
+}
+:root[data-pack="us"] {
+  --bg: #ffe6ee; --text: #4a0d24; --line: #4a0d24; --paper: #fffafb;
+  --primary: #ff8fab; --primary-text: #4a0d24; --alt: #7a1037; --alt-text: #ffe6ee;
+  --blob1: rgba(255,143,171,.40); --blob2: rgba(255,197,158,.5); --blob3: rgba(122,16,55,.15);
+}
+
+/* Card-back patterns, one per pack. Used on deck layers, drawn cards and the shelf tiles. */
+.pat-know {
+  background-color: #ff6fb5;
+  background-image: radial-gradient(circle, #ffd23f 0 4px, transparent 5px), radial-gradient(circle, #ffd23f 0 4px, transparent 5px);
+  background-size: 26px 26px; background-position: 0 0, 13px 13px;
+  --em-bg: #ffd23f; --em-fg: #22113d;
+}
+.pat-spicy {
+  background-color: #e0262f;
+  background-image:
+    linear-gradient(135deg, #ff8a1f 25%, transparent 25%), linear-gradient(225deg, #ff8a1f 25%, transparent 25%),
+    linear-gradient(315deg, #ff8a1f 25%, transparent 25%), linear-gradient(45deg, #ff8a1f 25%, transparent 25%);
+  background-size: 28px 28px; background-position: -14px 0, -14px 0, 0 0, 0 0;
+  --em-bg: #2a0a12; --em-fg: #ff8a1f;
+}
+.pat-crew {
+  background-color: #19b5a5;
+  background-image:
+    radial-gradient(circle, #c6f432 0 5px, transparent 6px), radial-gradient(circle, #ff5e5b 0 4px, transparent 5px),
+    radial-gradient(circle, #ffffff 0 3px, transparent 4px), radial-gradient(circle, #ffd23f 0 4px, transparent 5px);
+  background-size: 47px 41px, 37px 53px, 29px 31px, 59px 43px;
+  background-position: 0 0, 11px 19px, 21px 7px, 33px 29px;
+  --em-bg: #c6f432; --em-fg: #0e2a26;
+}
+.pat-deep {
+  background-color: #1c2457;
+  background-image:
+    radial-gradient(circle, #fff7d6 0 1.5px, transparent 2.5px), radial-gradient(circle, #ffe27a 0 2.5px, transparent 3.5px),
+    radial-gradient(circle, #b9a6ff 0 1.5px, transparent 2.5px);
+  background-size: 23px 29px, 61px 53px, 41px 37px;
+  background-position: 0 0, 17px 11px, 9px 23px;
+  --em-bg: #ffe27a; --em-fg: #12173a;
+}
+.pat-takes {
+  background-color: #fff1c9;
+  background-image: conic-gradient(#ff7a2f 25%, transparent 0 50%, #ff7a2f 0 75%, transparent 0);
+  background-size: 28px 28px;
+  --em-bg: #3b5bff; --em-fg: #ffffff;
+}
+.pat-us {
+  background-color: #7a1037;
+  background-image: repeating-radial-gradient(circle at 50% 50%, #ff8fab 0 3px, transparent 3px 15px);
+  --em-bg: #ffc59e; --em-fg: #4a0d24;
+}
+
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 12% 18%, var(--blob1) 0 120px, transparent 121px),
+    radial-gradient(circle at 92% 85%, var(--blob2) 0 160px, transparent 161px),
+    radial-gradient(circle at 85% 10%, var(--blob3) 0 90px, transparent 91px);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-ui);
+  padding-inline: 16px;
+  overflow-x: hidden;
+  transition: background-color .35s ease, color .35s ease;
+}
+.wrap {
+  max-width: 940px;
+  margin: 0 auto;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-block: 22px 32px;
+}
+.view { display: flex; flex-direction: column; gap: 18px; flex: 1; }
+.view[hidden], [hidden] { display: none !important; }
+.view.enter { animation: viewIn .35s cubic-bezier(.3,1.3,.5,1); }
+@keyframes viewIn { from { opacity: 0; transform: translateY(12px); } }
+
+/* Shared bits */
+.brand { position: relative; align-self: flex-start; }
+.brand h1, .game-title h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: .86;
+  letter-spacing: -0.02em;
+}
+.brand h1 { font-size: clamp(44px, 10vw, 76px); }
+.brand h1 span { color: #ff6fb5; -webkit-text-stroke: 2px var(--line); paint-order: stroke fill; }
+.sticker {
+  position: absolute;
+  top: -8px; right: -18px;
+  transform: rotate(10deg);
+  background: var(--primary);
+  color: var(--primary-text);
+  border: var(--stroke) solid var(--line);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font: 800 12px/1 var(--font-ui);
+  letter-spacing: .04em; text-transform: uppercase;
+  box-shadow: 3px 3px 0 var(--line);
+  white-space: nowrap;
+}
+.lede { margin: 12px 0 0; font-size: 15px; font-weight: 500; max-width: 44ch; line-height: 1.4; }
+.btn, .chip, .pack-tile { touch-action: manipulation; }
+.btn {
+  font: 800 16px/1 var(--font-ui);
+  border-radius: 999px;
+  padding: 15px 22px;
+  border: var(--stroke) solid var(--line);
+  background: var(--paper);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--line);
+  transition: transform .1s, box-shadow .1s, opacity .2s;
+}
+.btn:hover:not([disabled]) { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--line); }
+.btn:active:not([disabled]) { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--line); }
+.btn[disabled] { opacity: .4; cursor: default; }
+.btn.primary { background: var(--primary); color: var(--primary-text); padding-inline: 30px; font-size: 18px; }
+.btn.alt { background: var(--alt); color: var(--alt-text); }
+.btn.round { width: 52px; height: 52px; padding: 0; display: grid; place-items: center; font-size: 20px; }
+.btn.small { padding: 10px 16px; font-size: 14px; box-shadow: 3px 3px 0 var(--line); }
+.btn:focus-visible, .chip:focus-visible, .deck:focus-visible, .play-card:focus-visible, .pack-tile:focus-visible { outline: 3px solid var(--primary); outline-offset: 4px; }
+
+/* Home: pack shelf */
+.shelf { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+.pack-tile {
+  display: flex; flex-direction: column; gap: 12px;
+  text-align: left;
+  border: 0; background: none; padding: 0;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+.tile-art {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border: var(--stroke) solid var(--line);
+  border-radius: 22px;
+  box-shadow: 6px 6px 0 var(--line);
+  display: grid; place-items: center;
+  transition: transform .2s cubic-bezier(.3,1.6,.5,1), box-shadow .2s;
+  overflow: hidden;
+}
+.tile-art::before {
+  content: ""; position: absolute; inset: 10px;
+  border: 2px solid rgba(255,255,255,.55); border-radius: 14px;
+}
+.pack-tile:hover .tile-art { transform: translate(-2px, -4px) rotate(-1.5deg); box-shadow: 8px 10px 0 var(--line); }
+.pack-tile:active .tile-art { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--line); }
+.tile-badge {
+  position: relative;
+  background: var(--em-bg); color: var(--em-fg);
+  border: var(--stroke) solid var(--line);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font: 400 clamp(18px, 3.4vw, 26px)/1 var(--font-display);
+  box-shadow: 4px 4px 0 var(--line);
+  transform: rotate(-5deg);
+  white-space: nowrap;
+}
+.tile-meta { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tile-meta span { font-size: 14px; font-weight: 500; line-height: 1.35; }
+.tile-meta small { font: 800 12px/1 var(--font-ui); letter-spacing: .06em; text-transform: uppercase; opacity: .7; }
+
+/* Game header */
+.game-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 14px 24px; }
+.game-title { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; min-width: 0; }
+.game-title h2 { font-size: clamp(40px, 8vw, 64px); }
+.game-title p { margin: 0; font-size: 15px; font-weight: 500; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font: 800 14px/1 var(--font-ui);
+  color: var(--text);
+  background: var(--paper);
+  border: var(--stroke) solid var(--line);
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--line);
+  transition: transform .12s, box-shadow .12s, background .15s, color .15s;
+  opacity: .55;
+}
+.chip[aria-pressed="true"] { background: var(--c); color: var(--t); opacity: 1; }
+.chip:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--line); }
+
+/* Table */
+.table {
+  flex: 1;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 36px;
+  padding-block: 10px;
+}
+.deck-area { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.deck {
+  position: relative;
+  width: var(--deck-w);
+  aspect-ratio: 5 / 7;
+  max-width: 100%;
+  border: 0; padding: 0; background: none;
+  cursor: pointer;
+  border-radius: 18px;
+  touch-action: none;
+}
+.deck[disabled] { cursor: default; }
+.deck .layer { position: absolute; inset: 0; border-radius: 18px; border: var(--stroke) solid var(--line); box-sizing: border-box; }
+.deck .layer.top { box-shadow: 6px 6px 0 var(--line); transition: transform .2s cubic-bezier(.3,1.6,.5,1); }
+.deck .layer.top.dragging { box-shadow: 12px 12px 0 var(--line); }
+.deck:not([disabled]):hover .layer.top { transform: var(--t) translateY(-8px) rotate(-3deg); }
+.deck.empty::after {
+  content: "all gone!";
+  position: absolute; inset: 0;
+  display: grid; place-items: center;
+  border: var(--stroke) dashed var(--line);
+  border-radius: 18px;
+  font: 400 18px var(--font-display);
+}
+.deck-count {
+  font: 800 14px/1 var(--font-ui);
+  background: var(--paper);
+  border: var(--stroke) solid var(--line);
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-variant-numeric: tabular-nums;
+}
+.deck.shuffle .layer { animation: riffle .5s ease; }
+.deck.shuffle .layer:nth-child(odd) { animation-name: riffle-alt; }
+@keyframes riffle { 40% { transform: var(--t) translateX(-26px) rotate(-8deg); } }
+@keyframes riffle-alt { 40% { transform: var(--t) translateX(26px) rotate(8deg); } }
+
+.play-slot {
+  position: relative;
+  display: grid; place-items: center;
+  min-height: calc(var(--card-w) * 1.4 + 24px);
+}
+.placeholder {
+  width: var(--card-w); aspect-ratio: 5 / 7; max-width: 100%;
+  border: var(--stroke) dashed var(--line);
+  border-radius: 28px;
+  display: grid; place-items: center;
+  text-align: center;
+  font-size: 16px; font-weight: 700; line-height: 1.4;
+  padding: 24px;
+  box-sizing: border-box;
+}
+.placeholder strong { display: block; font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 1; margin-bottom: 10px; }
+
+/* Cards */
+.play-card {
+  position: absolute;
+  width: var(--card-w); aspect-ratio: 5 / 7; max-width: 100%;
+  perspective: 1400px;
+  cursor: grab;
+  container-type: inline-size;
+  border: 0; padding: 0; background: none; color: inherit; font: inherit;
+  touch-action: none;
+  user-select: none; -webkit-user-select: none;
+}
+.play-card.dragging { cursor: grabbing; }
+.inner {
+  position: absolute; inset: 0;
+  transform-style: preserve-3d;
+  transition: transform .6s cubic-bezier(.3,1.3,.5,1);
+}
+.face {
+  position: absolute; inset: 0;
+  border-radius: 28px;
+  border: var(--stroke) solid var(--line);
+  box-sizing: border-box;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  box-shadow: 9px 9px 0 var(--line);
+  overflow: hidden;
+}
+.front { transform: rotateY(180deg); }
+.back { display: grid; place-items: center; }
+.emblem {
+  width: 62%; aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--em-bg);
+  color: var(--em-fg);
+  border: var(--stroke) solid var(--line);
+  box-shadow: 5px 5px 0 var(--line);
+  display: grid; place-items: center;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 11cqw; line-height: .9;
+  transform: rotate(-8deg);
+}
+.front {
+  background: var(--lc);
+  color: var(--lt);
+  display: flex; flex-direction: column;
+  padding: 8% 8%;
+}
+.front .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tag {
+  background: var(--paper);
+  color: var(--text);
+  border: var(--stroke) solid var(--line);
+  border-radius: 999px;
+  padding: 2.4cqw 4cqw;
+  font: 800 4.6cqw/1 var(--font-ui);
+  text-transform: uppercase; letter-spacing: .04em;
+  transform: rotate(-4deg);
+  white-space: nowrap;
+}
+.num { font: 400 6cqw/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.front .q {
+  flex: 1;
+  display: grid; place-items: center;
+  text-align: center;
+  font: 800 9cqw/1.08 var(--font-ui);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  padding-block: 4%;
+}
+.front .foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; font: 400 5cqw/1 var(--font-display); }
+.front .foot span:last-child { font: 800 3.8cqw/1 var(--font-ui); text-transform: uppercase; letter-spacing: .08em; opacity: .8; }
+
+.stamp {
+  position: absolute; top: 9%; z-index: 3;
+  font: 400 8cqw/1 var(--font-display);
+  background: var(--primary);
+  color: var(--primary-text);
+  border: var(--stroke) solid var(--line);
+  border-radius: 14px;
+  padding: 2cqw 4cqw;
+  box-shadow: 4px 4px 0 var(--line);
+  opacity: 0;
+  pointer-events: none;
+}
+.stamp.r { left: 8%; transform: rotate(-14deg); }
+.stamp.l { right: 8%; transform: rotate(14deg); }
+.stamp.v { top: auto; bottom: 9%; left: 50%; transform: translateX(-50%) rotate(-6deg); white-space: nowrap; }
+
+.controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.hint { text-align: center; font-size: 14px; font-weight: 700; margin: 0; line-height: 1.6; }
+.hint b { background: var(--primary); color: var(--primary-text); padding: 1px 6px; border-radius: 6px; border: 2px solid var(--line); }
+kbd { font-family: var(--font-ui); border: 2px solid var(--line); border-radius: 6px; padding: 0 5px; font-size: 12px; background: var(--paper); }
+
+@media (max-width: 720px) {
+  .shelf { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+}
+@media (max-width: 640px) {
+  :root { --deck-w: 78px; }
+  .table { grid-template-columns: 1fr; gap: 20px; }
+  .deck-area { order: 2; flex-direction: row; justify-content: center; }
+  .hint .keys { display: none; }
+  .sticker { right: 0; top: -14px; }
+  .btn { padding: 13px 18px; font-size: 15px; }
+  .btn.primary { font-size: 16px; padding-inline: 22px; }
+  .tile-meta span { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .inner, .deck .layer.top, .tile-art { transition: none; }
+  .deck.shuffle .layer, .view.enter { animation: none; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <section class="view" id="home">
+    <div class="brand">
+      <h1>getting<br><span>warmer</span></h1>
+      <div class="sticker">6 packs</div>
+      <p class="lede">Pick a pack. Pull a card, answer it yourself, then turn it around and pass it across the table.</p>
+    </div>
+    <div class="shelf" id="shelf"></div>
+  </section>
+
+  <section class="view" id="game" hidden>
+    <div class="game-head">
+      <div class="game-title">
+        <button class="btn small" id="toPacks">← All packs</button>
+        <h2 id="packName"></h2>
+        <p id="packTag"></p>
+      </div>
+      <div class="filters" id="filters" role="group" aria-label="Which kinds of questions are in the deck"></div>
+    </div>
+
+    <main class="table">
+      <div class="deck-area">
+        <button class="deck" id="deck" aria-label="Draw a card from the deck"></button>
+        <div class="deck-count" id="deckCount"></div>
+      </div>
+      <div class="play-slot" id="play">
+        <div class="placeholder" id="placeholder"><div></div></div>
+      </div>
+    </main>
+
+    <div class="controls">
+      <button class="btn round" id="prev" disabled aria-label="Previous card">←</button>
+      <button class="btn primary" id="draw">Draw a card</button>
+      <button class="btn round" id="next" disabled aria-label="Next card you've already seen">→</button>
+      <button class="btn" id="turn" disabled>Turn around ↻</button>
+      <button class="btn alt" id="shuffle">Shuffle</button>
+    </div>
+    <p class="hint"><b>Swipe up</b> from the deck to draw · <b>swipe sideways</b> for the next card · <b>swipe down</b> on a card to turn it around<span class="keys"> · <kbd>Space</kbd> draws, <kbd>←</kbd> <kbd>→</kbd> revisit, <kbd>↓</kbd> turns, <kbd>Esc</kbd> packs</span></p>
+  </section>
+</div>
+
+<script>
+const QUESTIONS = {
+  warm: [
+    "What's the best thing you've eaten this month?",
+    "What's a small thing that instantly makes your day better?",
+    "What were you obsessed with when you were ten?",
+    "What's your go-to order at a coffee shop?",
+    "You have a free Saturday with zero plans. How does it go?",
+    "What's a song you'll never skip?",
+    "What's the last thing that made you laugh out loud?",
+    "Are you a planner, or a figure-it-out-when-we-get-there person?",
+    "What's a hobby you picked up and then quietly dropped?",
+    "What's your most controversial food opinion?",
+    "Morning person, night owl, or neither?",
+    "What's a movie you can quote way too much of?",
+    "What's the best trip you've ever taken?",
+    "What's something you're weirdly good at?",
+    "What would your friends say you talk about too much?",
+    "What's on your bucket list that might surprise people?",
+    "What's the best gift you've ever received?",
+    "Which app on your phone do you open the most?",
+    "What's your ideal way to spend a rainy day?",
+    "If you could master one instrument overnight, which would it be?",
+    "What's a show you've rewatched more than once?",
+    "What's your karaoke song, even if you'd never actually sing it?",
+    "What's one place in your city everyone should visit?",
+    "Dogs, cats, or neither? Defend your answer.",
+    "What's the most spontaneous thing you've ever done?",
+    "What was your very first job?",
+    "What's a skill you wish they'd taught in school?",
+    "What's your comfort meal?",
+    "What's a trend you secretly liked?",
+    "If you could live in any decade, which would you pick?",
+    "What's the worst haircut you've ever had?",
+    "What's a book or podcast you keep recommending?",
+    "Beach, mountains, or city?",
+    "What's your favorite season, and what do you do in it?",
+    "What's a word or phrase you say all the time?",
+    "What would you happily spend way too much money on?",
+    "What did you want to be when you grew up?",
+    "What's a game you'll always say yes to?",
+    "What's the best concert or live show you've been to?",
+    "What's the most interesting thing you've learned recently?"
+  ],
+  curious: [
+    "What's something you've changed your mind about in the last few years?",
+    "Who in your life makes you feel most like yourself?",
+    "What's a compliment you still think about?",
+    "What does a really good day look like for you right now?",
+    "What are you most looking forward to this year?",
+    "What do people often get wrong about you when they first meet you?",
+    "What's a risk you took that paid off?",
+    "How do you recharge after a long week?",
+    "What's a family tradition you'd want to keep going?",
+    "What are you proud of that you rarely get to mention?",
+    "What's a goal you're quietly working toward?",
+    "What's the best advice anyone has given you?",
+    "Which friend have you known the longest, and how did you meet?",
+    "What's something you're curious about but haven't explored yet?",
+    "What makes you lose track of time?",
+    "What's a small kindness from a stranger that stuck with you?",
+    "What's a city you could see yourself living in someday?",
+    "What do you like most about the work you do?",
+    "What's a fear you've gotten over?",
+    "When did you last feel really brave?",
+    "What's a pet peeve you just can't let go of?",
+    "If you could have dinner with anyone from your family's past, who would it be?",
+    "What's a lesson you learned the hard way?",
+    "How has the place you grew up shaped who you are?",
+    "What's something you're trying to get better at?",
+    "What's a version of your life you sometimes daydream about?",
+    "What did your teenage self care about most?",
+    "What's a decision that changed the direction of your life?",
+    "How do you show people you care about them?",
+    "What's the most “you” thing you own?",
+    "What's a question you wish people asked you more often?",
+    "What does home feel like to you?",
+    "What's something you'd love to learn from someone else?",
+    "What would you do with a year off and enough money?",
+    "What's a belief you hold that most people around you don't?"
+  ],
+  deep: [
+    "What's something you're still figuring out about yourself?",
+    "In your opinion, what does a great friendship need?",
+    "When do you feel most at ease around new people?",
+    "What used to make you insecure that you've since made peace with?",
+    "Who taught you the most about kindness?",
+    "What's a small moment from this year you'd want to keep forever?",
+    "What's a value you won't compromise on?",
+    "What always makes you feel understood?",
+    "What's something you've done that you never would have predicted five years ago?",
+    "What's a turning point in your life you don't talk about often?",
+    "What's one thing you want your future self to thank you for?",
+    "How do you know when you can really trust someone?",
+    "What was the hardest year of your life so far, and what did it teach you?",
+    "What do you think your best quality is?",
+    "What's something about you that takes people a while to notice?",
+    "What's a dream you've let go of, and how do you feel about it now?",
+    "When was the last time you felt really proud of yourself?",
+    "What do you need from people when you're having a rough day?",
+    "What makes you feel most alive?",
+    "What are you grateful for that's easy to overlook?",
+    "What's a conversation that changed how you see things?",
+    "What do you hope people say about you when you're not in the room?",
+    "What would you want someone to know about you before getting to know you well?",
+    "Who has taught you something important without meaning to?",
+    "What's something you'd like to be braver about?",
+    "What's one thing about today you think you'll remember?",
+    "Describe your perfect day, start to finish.",
+    "What would you like to do more of in the next year?",
+    "What first impression have you made that you'd love a redo on?"
+  ]
+};
+const PACKS = [
+  { id: "know", name: "New Faces", tagline: "For people still getting to know each other.", emblem: "getting<br>warmer",
+    sections: [
+      { key: "warm", tag: "Warm-up", bg: "#ffd23f", fg: "#22113d", qs: QUESTIONS.warm },
+      { key: "curious", tag: "Curious", bg: "#ff6fb5", fg: "#22113d", qs: QUESTIONS.curious },
+      { key: "deep", tag: "Deeper", bg: "#4c5bff", fg: "#ffffff", qs: QUESTIONS.deep }
+    ] },
+  { id: "spicy", name: "Spicy", tagline: "Flirty, bold, and a little dangerous.", emblem: "spicy",
+    sections: [
+      { key: "flirty", tag: "Flirty", bg: "#ff8a1f", fg: "#2a0a12", qs: [
+        "What's the first thing you notice about someone you're attracted to?",
+        "What's your most underrated attractive quality?",
+        "What's a compliment that would make you blush?",
+        "What's the smoothest line anyone has ever used on you?",
+        "Who was your first celebrity crush?",
+        "What's an outfit you feel unstoppable in?",
+        "What's a small gesture you find seriously attractive?",
+        "Text first, or wait to be texted?",
+        "What does a perfect flirt look like to you?",
+        "What song belongs on the soundtrack of your love life?",
+        "What's a green flag that instantly wins you over?",
+        "What's a red flag you've ignored because they were cute?",
+        "What's the most romantic thing you've ever done for someone?",
+        "Have you ever had a crush on a friend? What happened?",
+        "What's the cheesiest pickup line you secretly like?",
+        "Rate your flirting skills out of ten. Be honest.",
+        "What's a song that instantly puts you in a romantic mood?",
+        "What's the best compliment you've ever gotten from a stranger?",
+        "Eye contact or a good laugh: which wins you over faster?",
+        "What's your go-to move when you want someone to notice you?",
+        "What's a scent that makes you look twice?",
+        "What's the most charming thing someone can do when you first meet?",
+        "Which fictional character would you date in real life?",
+        "What's your best feature, according to other people?",
+        "What makes someone instantly more attractive when they talk?",
+        "What hobby makes someone way more attractive?",
+        "What's the cutest way someone has asked you out?",
+        "Holding hands in public: yes, no, or depends?"
+      ] },
+      { key: "spicy", tag: "Spicy", bg: "#e0262f", fg: "#fff6f1", qs: [
+        "What's the boldest move you've ever made on someone?",
+        "What's the most unexpected place you've caught feelings?",
+        "What's always attractive, no matter who's doing it?",
+        "What's a turn-off that surprises people?",
+        "What's the most spontaneous date you've ever said yes to?",
+        "Have you ever slid into someone's DMs? How did it go?",
+        "How do you show someone you're into them without saying it?",
+        "What's a dream date you've never told anyone about?",
+        "What's the longest you've spent thinking about one kiss?",
+        "Describe your best kiss in three words.",
+        "What do you find attractive that most people don't?",
+        "Have you ever been caught checking someone out?",
+        "What's the most daring thing on your romance bucket list?",
+        "What's a secret talent that would impress a date?",
+        "What's the best date that never turned into anything?",
+        "What would you want a crush to know without having to say it?",
+        "What's the most memorable date spot you've been to?",
+        "Have you ever had a secret admirer? Did you find out who?",
+        "What's the most attractive accent?",
+        "What would you only do on a date if you really liked someone?",
+        "What's the boldest thing you'd do to get someone's attention?",
+        "What's a voice note you'd never want anyone else to hear?",
+        "Have you ever fallen for someone you just met?",
+        "What's the best dance-floor moment you've had with someone?",
+        "What's your type, and have you ever dated your opposite?",
+        "Have you ever known a date was a mistake within five minutes?",
+        "What makes you weak at the knees?",
+        "Have you ever written a love letter? Who was it for?"
+      ] },
+      { key: "hot", tag: "Extra hot", bg: "#2a0a12", fg: "#ffb18a", qs: [
+        "What's the most attractive thing someone can say to you?",
+        "What's a dating rule you swore by and then broke?",
+        "What's the riskiest text you've ever sent?",
+        "Truth: have you ever had a crush on someone in this room?",
+        "What do you want more of in your love life?",
+        "What's the wildest thing you've done for love?",
+        "Who's the one that got away?",
+        "What's a guilty pleasure you'd only admit to someone you trust?",
+        "What makes a goodnight kiss memorable?",
+        "What's your ideal slow-dance song?",
+        "Which city would you most want to wake up in with someone?",
+        "When did you know you were falling for someone?",
+        "What's something about you that's better up close?",
+        "What's a romantic risk you're glad you took?",
+        "What's your biggest weakness when it comes to attraction?",
+        "Tell everyone your crush's first initial, or skip your next turn.",
+        "What's the most unforgettable first kiss you've had?",
+        "Which romantic movie scene would you love to recreate?",
+        "What's the most flirtatious thing you've done this year?",
+        "What's a secret about your love life nobody here knows?",
+        "Have you ever stayed up all night talking to someone you liked?",
+        "What's the most jealous you've ever been?",
+        "What would you never forgive in a relationship?",
+        "What makes you feel most wanted?"
+      ] }
+    ] },
+  { id: "crew", name: "The Crew", tagline: "For the group chat, in person.", emblem: "the<br>crew",
+    sections: [
+      { key: "group", tag: "Group", bg: "#c6f432", fg: "#0e2a26", qs: [
+        "What's the best night this group has ever had?",
+        "Which of us would survive longest in a zombie movie?",
+        "What's a group trip we absolutely need to take?",
+        "What's your first memory of someone here?",
+        "Which song instantly reminds you of this group?",
+        "If this group were a TV show, what would it be called?",
+        "Which inside joke should finally be retired?",
+        "Who here gives the best advice?",
+        "What's a tradition we should start?",
+        "What's the most chaotic group chat moment ever?",
+        "If we opened a business together, what would it be, and who's the boss?",
+        "Who in the group has changed the most since you met?",
+        "What's the best meal we've had together?",
+        "Which of us would be the worst roommate?",
+        "What would our group's theme song be?",
+        "What story about this group will we still be telling in twenty years?",
+        "Which of us would make the best president, and why?",
+        "What's the dumbest argument this group has ever had?",
+        "If we were a band, who plays what?",
+        "What's the best photo ever taken of this group?",
+        "Which of us would you trust with your phone unlocked?",
+        "What movie should we all watch together?",
+        "Who here would win a cook-off?",
+        "What skill does someone here have that the rest of us underrate?",
+        "If we all switched lives for a week, whose would you want?",
+        "Where do we keep saying we'll go and never do?",
+        "What would our group's reality show be called?"
+      ] },
+      { key: "likely", tag: "Most likely to", bg: "#6fd3ff", fg: "#0e2a26", qs: [
+        "Who's most likely to become famous?",
+        "Who's most likely to cry at a movie?",
+        "Who's most likely to get lost in their own neighborhood?",
+        "Who's most likely to start a podcast?",
+        "Who's most likely to move abroad on a whim?",
+        "Who's most likely to forget a birthday?",
+        "Who's most likely to win a reality show?",
+        "Who's most likely to adopt five pets?",
+        "Who's most likely to text the wrong person?",
+        "Who's most likely to be late to their own wedding?",
+        "Who's most likely to talk their way out of a parking ticket?",
+        "Who's most likely to become a millionaire?",
+        "Who's most likely to fall asleep at the party?",
+        "Who's most likely to secretly run a meme account?",
+        "Who's most likely to cancel plans last minute?",
+        "Who's most likely to go viral by accident?",
+        "Who's most likely to survive alone on a desert island?",
+        "Who's most likely to become a teacher?",
+        "Who's most likely to get a tattoo on a dare?",
+        "Who's most likely to own the most shoes?",
+        "Who's most likely to befriend a stranger on a plane?",
+        "Who's most likely to laugh at the worst possible moment?",
+        "Who's most likely to forget why they walked into a room?",
+        "Who's most likely to run a marathon?",
+        "Who's most likely to have a secret talent we don't know about?",
+        "Who's most likely to plan the next trip?",
+        "Who's most likely to still be texting at 4 a.m.?"
+      ] },
+      { key: "seat", tag: "Hot seat", bg: "#ff5e5b", fg: "#ffffff", qs: [
+        "Person on your left: what's your most embarrassing moment?",
+        "What's something you've never told this group?",
+        "Who here would you call at 3 a.m.?",
+        "What's one thing you admire about the person across from you?",
+        "What's your most irrational fear?",
+        "What's the worst gift you've ever pretended to like?",
+        "What's a lie you told as a kid that you still remember?",
+        "What's your most unpopular opinion?",
+        "What's the pettiest thing you've ever done?",
+        "Which of your habits annoys everyone here?",
+        "Who here do you think knows you best?",
+        "What's the last thing you searched on your phone?",
+        "Give everyone here a one-word nickname.",
+        "What's a compliment you've been meaning to give someone here?",
+        "What's something from the last year you'd redo?",
+        "What song would you be embarrassed for us to know you love?",
+        "What's the most trouble you've ever been in?",
+        "What's the worst habit you'll never quit?",
+        "Who here would you want with you in a crisis?",
+        "What are you secretly proud of?",
+        "What's your most awkward first impression?",
+        "If you could delete one app from someone's phone here, which app and whose?",
+        "When did someone here really show up for you?",
+        "What's the weirdest thing you believed as a kid?",
+        "Show the group the last photo in your camera roll.",
+        "What do you want this group to do more of?"
+      ] }
+    ] },
+  { id: "deep", name: "Deep End", tagline: "2 a.m. questions for when nobody wants to go home.", emblem: "deep<br>end",
+    sections: [
+      { key: "night", tag: "Late night", bg: "#b9a6ff", fg: "#12173a", qs: [
+        "What's something you believe that you can't fully explain?",
+        "What do you think happens to us after we die?",
+        "When did you last change your mind about something important?",
+        "What's a question you're afraid to know the answer to?",
+        "If you could know one truth about the universe, what would it be?",
+        "What does a meaningful life look like to you?",
+        "What are you carrying that you haven't put down yet?",
+        "Which version of yourself are you most proud of?",
+        "What's the kindest thing you've done that nobody knows about?",
+        "What would you do if you weren't afraid?",
+        "What memory do you return to when you need comfort?",
+        "Do you think people really change?",
+        "What's something you've forgiven but not forgotten?",
+        "What would you tell your younger self in one sentence?",
+        "What makes you feel small in a good way?",
+        "What moment made you see your parents differently?",
+        "What were you once certain of that you now doubt?",
+        "Where do you feel most at peace?",
+        "What do you think your purpose is right now?",
+        "When do you feel most like yourself?",
+        "What small choice ended up changing everything?",
+        "What would you want to be remembered for?",
+        "What's something beautiful you noticed recently?",
+        "What does home mean to you now?",
+        "What part of your past are you most grateful for?",
+        "What's a fear you've never said out loud?",
+        "What would your perfect ordinary day look like?",
+        "When did you last feel truly free?",
+        "What question do you think about more than you'd admit?"
+      ] },
+      { key: "real", tag: "Real talk", bg: "#ffe27a", fg: "#12173a", qs: [
+        "When do you feel most lonely?",
+        "What part of yourself are you still learning to like?",
+        "What do you wish more people asked you about?",
+        "What's a loss that changed you?",
+        "Who do you need to call more often?",
+        "What does success mean to you now, compared to five years ago?",
+        "What habit is quietly holding you back?",
+        "What do you pretend not to care about?",
+        "When did you last cry, and why?",
+        "What's one thing you'd change about how you were raised?",
+        "What are you most afraid people will find out about you?",
+        "What's a dream you haven't said out loud yet?",
+        "What would you want your last words to be?",
+        "What do you think you're here to do?",
+        "What lesson do you keep having to relearn?",
+        "What are you avoiding right now?",
+        "What do you need to hear more often?",
+        "What mistake are you still making peace with?",
+        "When did you last feel really seen by someone?",
+        "Which relationship in your life do you wish were different?",
+        "What do people misunderstand about you most?",
+        "What would you do differently if nobody was watching?",
+        "What boundary do you wish you'd set sooner?",
+        "What's the hardest thing you've ever had to say to someone?",
+        "What are you proud of that you never get credit for?",
+        "What does your inner voice sound like on a bad day?",
+        "What have you outgrown?",
+        "Who has shaped you the most, for better or worse?",
+        "What would make this year feel like a success?"
+      ] },
+      { key: "big", tag: "Big questions", bg: "#4fd1c5", fg: "#12173a", qs: [
+        "Is it better to be loved or to be understood?",
+        "Would you want to know the date of your death?",
+        "Do you believe in fate?",
+        "Is there such a thing as a truly selfless act?",
+        "Would you rather be remembered or be happy?",
+        "If you could relive one day, which would it be?",
+        "What's worth giving up comfort for?",
+        "Can you be truly happy without other people?",
+        "What would you do with one year left?",
+        "Do we choose who we love?",
+        "Is it more important to be right or to be kind?",
+        "Do you think we're alone in the universe?",
+        "Would you live forever if you could?",
+        "What matters more: freedom or security?",
+        "If you could erase one memory, would you?",
+        "Can you love more than one person at once?",
+        "Does everything happen for a reason?",
+        "Would you rather know the truth or stay happy?",
+        "What makes a person good?",
+        "If you could ask the universe one question, what would it be?",
+        "Is nostalgia a gift or a trap?",
+        "What's the meaning of life, in one sentence?"
+      ] }
+    ] },
+  { id: "takes", name: "Hot Takes", tagline: "Pick a side and defend it.", emblem: "hot<br>takes",
+    sections: [
+      { key: "wyr", tag: "Would you rather", bg: "#ff7a2f", fg: "#1d1d1d", qs: [
+        "Would you rather always be ten minutes late or twenty minutes early?",
+        "Would you rather lose your phone or your wallet?",
+        "Would you rather live without music or without movies?",
+        "Would you rather fly or be invisible?",
+        "Would you rather have a rewind button or a pause button for your life?",
+        "Would you rather eat only sweet or only salty for a year?",
+        "Would you rather live in a big city or the middle of nowhere?",
+        "Would you rather speak every language or play every instrument?",
+        "Would you rather be famous or rich?",
+        "Would you rather explore space or the deep ocean?",
+        "Would you rather quit social media or quit TV forever?",
+        "Would you rather have a personal chef or a personal driver?",
+        "Would you rather relive your teens or skip to your seventies?",
+        "Would you rather talk to animals or talk to ghosts?",
+        "Would you rather be the funniest or the smartest person in the room?",
+        "Would you rather always be cold or always be hot?",
+        "Would you rather give up coffee or give up dessert?",
+        "Would you rather have a perfect memory or be able to forget anything?",
+        "Would you rather take a road trip or a cruise?",
+        "Would you rather fight one horse-sized duck or a hundred duck-sized horses?",
+        "Would you rather have unlimited flights or unlimited food delivery?",
+        "Would you rather live by the beach or in the mountains?",
+        "Would you rather read minds or see the future?",
+        "Would you rather lose your sense of taste or your sense of smell?",
+        "Would you rather be stuck in an elevator with your ex or your boss?",
+        "Would you rather never need to sleep or never need to eat?",
+        "Would you rather have a dragon or be a dragon?",
+        "Would you rather only whisper or only shout for a week?",
+        "Would you rather live in a treehouse or a houseboat?",
+        "Would you rather be a famous actor or a famous musician?",
+        "Would you rather travel to the past or to the future?",
+        "Would you rather have free Wi-Fi everywhere or free coffee everywhere?",
+        "Would you rather give up your phone or your bed for a month?",
+        "Would you rather always win arguments or always know when someone's lying?",
+        "Would you rather have a rewind button for conversations or a mute button for people?",
+        "Would you rather teleport or stop time?",
+        "Would you rather live in a world without winter or without summer?",
+        "Would you rather have your life narrated or have a theme song when you walk in?",
+        "Would you rather never sit in traffic again or never get sick again?",
+        "Would you rather lose all your photos or all your messages?"
+      ] },
+      { key: "take", tag: "Hot take", bg: "#3b5bff", fg: "#ffffff", qs: [
+        "Pineapple on pizza: defend your answer.",
+        "What's an overrated movie everyone loves?",
+        "What's a food you'll never understand the hype for?",
+        "Is a hot dog a sandwich?",
+        "What “adult” thing is actually overrated?",
+        "Which popular app should be deleted forever?",
+        "Which holiday deserves more love?",
+        "What's the most overrated travel destination?",
+        "Cereal: soup or not soup?",
+        "Which trend needs to end this year?",
+        "What's the best decade for music, and why?",
+        "Is it ever okay to recline your seat on a plane?",
+        "Which show should everyone stop recommending?",
+        "Breakfast for dinner: genius or chaos?",
+        "Which pet is superior, and why is everyone else wrong?",
+        "What job is secretly the best job?",
+        "Which rule of etiquette should be scrapped?",
+        "Sunrise or sunset? Which one is overrated?",
+        "What's the worst ice cream flavor?",
+        "Texts or voice notes: who's the villain?",
+        "Who's the most overrated celebrity?",
+        "Socks with sandals: crime or comfort?",
+        "Which classic book or movie is actually boring?",
+        "Is it rude to leave someone on read?",
+        "What's the most overrated fast food?",
+        "Should tipping be abolished?",
+        "Is ketchup on eggs acceptable?",
+        "Which sport shouldn't count as a sport?",
+        "Are birthdays overrated after 25?",
+        "What's the most annoying phrase people say?",
+        "Window or aisle, and why is the other one wrong?",
+        "Is it okay to wear pajamas to the grocery store?",
+        "What's the worst way to leave a party?",
+        "Should you split the bill on a first date?",
+        "Which “healthy” food is secretly terrible?",
+        "Reality shows: guilty pleasure or just bad?",
+        "What's the most underrated city?",
+        "Is replying-all ever acceptable?",
+        "What's the best snack of all time, and why is it obviously that?",
+        "Mint chocolate chip: delicious or toothpaste?"
+      ] }
+    ] },
+  { id: "us", name: "Just Us", tagline: "For two people who are already a thing.", emblem: "just<br>us",
+    sections: [
+      { key: "us", tag: "Us", bg: "#ff8fab", fg: "#4a0d24", qs: [
+        "When did you first realize you liked me?",
+        "What's a little thing I do that you secretly love?",
+        "What's your favorite photo of us, and why?",
+        "What do we do better together than apart?",
+        "Which of my habits have you picked up?",
+        "What's our song? If we don't have one, what should it be?",
+        "What's your favorite way to spend a lazy day with me?",
+        "What do we argue about most, and why do you think that is?",
+        "What's something you'd like us to try together?",
+        "When did you feel really proud of me?",
+        "What's one thing I could do this week to make your life easier?",
+        "When did you laugh hardest with me?",
+        "When do you feel closest to me?",
+        "What's something about me that surprised you?",
+        "What do you like most about the way we talk to each other?",
+        "Which of my qualities would you like to have?",
+        "What do I do that makes you feel safe?",
+        "How do you like to be comforted when you're upset?",
+        "How have I changed you for the better?",
+        "What's your favorite free thing to do together?",
+        "What do you wish I knew without you having to say it?",
+        "What's the best advice I've ever given you?",
+        "What should we do more of?",
+        "What's your favorite part of our everyday routine?",
+        "When do you feel most appreciated by me?",
+        "What's one thing you'd never want me to change?",
+        "What's a small way I could surprise you?",
+        "How do we balance each other out?",
+        "What nickname would you secretly like me to call you?"
+      ] },
+      { key: "memory", tag: "Memory lane", bg: "#ffc59e", fg: "#4a0d24", qs: [
+        "What do you remember most about our first date?",
+        "What did you think of me the first time we met?",
+        "What's our best trip so far?",
+        "What's a small moment with me you'll never forget?",
+        "What's the funniest thing that's happened to us?",
+        "When did we get through something hard together?",
+        "What's a gift from me you still think about?",
+        "What meal we shared do you still talk about?",
+        "What's something we used to do that we should bring back?",
+        "When did you know this was serious?",
+        "What's the silliest argument we've ever had?",
+        "Which of our dates would you relive?",
+        "What's a text from me you remember?",
+        "What surprised you most about our first year?",
+        "What tradition have we built without planning to?",
+        "What's your favorite picture of me?",
+        "What song reminds you of us?",
+        "What's the best surprise we've given each other?",
+        "What place feels like ours?",
+        "When did we feel like a real team?",
+        "What was your first impression of my friends?",
+        "When did I make you laugh when you really needed it?",
+        "What's your favorite holiday we've spent together?",
+        "Which outfit of mine do you remember?",
+        "What night with me would you relive exactly as it was?",
+        "What's the first thing you remember us agreeing on?",
+        "What was the first gift you gave me, and why did you pick it?",
+        "When did you realize you could be completely yourself with me?"
+      ] },
+      { key: "future", tag: "Future", bg: "#7a1037", fg: "#ffe6ee", qs: [
+        "Where do you see us in five years?",
+        "What's a dream you'd like us to chase together?",
+        "Where do we have to go together?",
+        "What kind of home do you picture for us?",
+        "What's one thing you want us to always protect?",
+        "What would you like us to learn together?",
+        "How should we celebrate our next big milestone?",
+        "What's a challenge you think we'd handle well?",
+        "What's one way we could grow as a team?",
+        "What adventure should we plan next?",
+        "What tradition do you want us to keep forever?",
+        "What goal do you want us to reach this year?",
+        "What would our perfect weekend look like in ten years?",
+        "How do you want us to handle hard times?",
+        "Which city could you see us living in?",
+        "What should we save up for together?",
+        "How do you picture us when we're old?",
+        "What's a skill you want to teach me?",
+        "What trip should we take before life gets busier?",
+        "What's one promise you want us to keep?",
+        "What's a dream for us you haven't told me yet?",
+        "How should we celebrate an ordinary Tuesday?",
+        "What do you hope people say about us?"
+      ] }
+    ] }
+];
+PACKS.forEach(p => {
+  p.cards = [];
+  p.sections.forEach((s, si) => s.qs.forEach(q => p.cards.push({ id: p.cards.length + 1, si, q })));
+});
+
+const $ = s => document.querySelector(s);
+const root = document.documentElement;
+const deckEl = $("#deck"), play = $("#play"), placeholder = $("#placeholder");
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const D = ms => reduced ? 1 : ms;
+
+let pack = PACKS[0];
+let levels = new Set();
+let order = [], pos = 0, history = [], view = -1, current = null;
+
+/* ---------- Shelf ---------- */
+function renderShelf() {
+  $("#shelf").innerHTML = PACKS.map(p => `
+    <button class="pack-tile" data-pack="${p.id}" aria-label="Open the ${p.name} pack">
+      <div class="tile-art pat-${p.id}"><span class="tile-badge">${p.name}</span></div>
+      <div class="tile-meta"><span>${p.tagline}</span><small>${p.cards.length} cards</small></div>
+    </button>`).join("");
+  document.querySelectorAll(".pack-tile").forEach(t => t.addEventListener("click", () => openPack(t.dataset.pack)));
+}
+
+function show(id) {
+  ["home", "game"].forEach(v => { const el = $("#" + v); el.hidden = v !== id; el.classList.remove("enter"); });
+  const el = $("#" + id); void el.offsetWidth; el.classList.add("enter");
+  window.scrollTo(0, 0);
+}
+
+function openPack(id) {
+  pack = PACKS.find(p => p.id === id) || PACKS[0];
+  root.dataset.pack = pack.id;
+  $("#packName").textContent = pack.name;
+  $("#packTag").textContent = pack.tagline;
+  levels = new Set(pack.sections.map(s => s.key));
+  const f = $("#filters");
+  f.hidden = pack.sections.length < 2;
+  f.innerHTML = pack.sections.map(s => `<button class="chip" data-key="${s.key}" aria-pressed="true" style="--c:${s.bg};--t:${s.fg}">${s.tag}</button>`).join("");
+  f.querySelectorAll(".chip").forEach(chip => chip.addEventListener("click", () => {
+    const k = chip.dataset.key;
+    if (levels.has(k) && levels.size === 1) return; // keep at least one kind in the deck
+    levels.has(k) ? levels.delete(k) : levels.add(k);
+    chip.setAttribute("aria-pressed", levels.has(k));
+    restart();
+  }));
+  if (current) { current.remove(); current = null; }
+  restart(true);
+  show("game");
+  try { localStorage.setItem("gw-pack", pack.id); } catch (e) {}
+}
+
+function toShelf() {
+  if (current) { current.remove(); current = null; }
+  delete root.dataset.pack;
+  show("home");
+}
+
+/* ---------- Deck ---------- */
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function buildDeck() {
+  order = shuffle(pack.cards.filter(c => levels.has(pack.sections[c.si].key)).map(c => c.id));
+  pos = 0; history = []; view = -1;
+}
+
+function renderDeck() {
+  const left = order.length - pos;
+  const layers = left === 0 ? 0 : Math.max(1, Math.min(7, Math.ceil(left / order.length * 7)));
+  deckEl.innerHTML = "";
+  for (let i = 0; i < layers; i++) {
+    const l = document.createElement("div");
+    l.className = `layer pat-${pack.id}` + (i === layers - 1 ? " top" : "");
+    const t = `translate(${-i * 2}px, ${-i * 3}px)`;
+    l.style.setProperty("--t", t);
+    l.style.transform = t;
+    deckEl.appendChild(l);
+  }
+  deckEl.classList.toggle("empty", left === 0);
+  deckEl.disabled = left === 0;
+  $("#deckCount").textContent = `${left} left`;
+  $("#draw").disabled = left === 0;
+  $("#draw").textContent = left === 0 ? "No cards left" : "Draw a card";
+  $("#prev").disabled = view <= 0;
+  $("#next").disabled = view >= history.length - 1;
+  $("#turn").disabled = !current;
+}
+
+function setPlaceholder(title, text) {
+  placeholder.querySelector("div").innerHTML = `<strong>${title}</strong>${text}`;
+}
+
+function makeCard(card) {
+  const s = pack.sections[card.si];
+  const el = document.createElement("button");
+  el.className = "play-card";
+  el.setAttribute("aria-label", `${s.tag} card: ${card.q}`);
+  el.style.setProperty("--lc", s.bg);
+  el.style.setProperty("--lt", s.fg);
+  el.innerHTML = `
+    <div class="stamp r">next!</div><div class="stamp l">next!</div><div class="stamp v">turn it ↻</div>
+    <div class="inner">
+      <div class="face back pat-${pack.id}"><div class="emblem">${pack.emblem}</div></div>
+      <div class="face front">
+        <div class="top"><span class="tag">${s.tag}</span><span class="num">#${card.id}</span></div>
+        <div class="q">${card.q}</div>
+        <div class="foot"><span>getting warmer</span><span>${pack.name}</span></div>
+      </div>
+    </div>`;
+  attachSwipe(el);
+  return el;
+}
+
+function setInner(el) {
+  el.querySelector(".inner").style.transform = `rotate(${el.dataset.turn === "1" ? 180 : 0}deg) rotateY(${el.dataset.up === "1" ? 180 : 0}deg)`;
+}
+function flip(el) { el.dataset.up = el.dataset.up === "1" ? "0" : "1"; setInner(el); }
+function turn(el) { if (!el) return; el.dataset.turn = el.dataset.turn === "1" ? "0" : "1"; setInner(el); }
+function faceUp(el) { el.dataset.up = "1"; setInner(el); }
+
+/* Card gestures: tap flips · sideways swipe throws it away and brings the next card · vertical swipe turns it 180° to face the other person */
+function attachSwipe(el) {
+  let sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0, active = false, mode = null;
+  const stampR = el.querySelector(".stamp.r"), stampL = el.querySelector(".stamp.l"), stampV = el.querySelector(".stamp.v");
+  const resetStamps = () => { stampR.style.opacity = stampL.style.opacity = stampV.style.opacity = 0; };
+  el.addEventListener("pointerdown", e => {
+    if (el !== current || e.button > 0) return;
+    active = true; mode = null; sx = e.clientX; sy = e.clientY; dx = dy = 0; t0 = performance.now();
+    el.setPointerCapture(e.pointerId);
+    el.getAnimations().forEach(a => a.finish());
+    el.style.transition = "none";
+  });
+  el.addEventListener("pointermove", e => {
+    if (!active) return;
+    dx = e.clientX - sx; dy = e.clientY - sy;
+    if (!mode && Math.hypot(dx, dy) > 8) { mode = Math.abs(dx) > Math.abs(dy) ? "h" : "v"; el.classList.add("dragging"); }
+    if (mode === "h") {
+      el.style.transform = `translate(${dx}px, ${dy * .2}px) rotate(${dx / 14}deg)`;
+      const p = Math.min(1, Math.abs(dx) / 110);
+      stampR.style.opacity = dx > 0 ? p : 0;
+      stampL.style.opacity = dx < 0 ? p : 0;
+    } else if (mode === "v") {
+      el.style.transform = `translateY(${dy * .35}px) rotate(${Math.max(-20, Math.min(20, dy * .12))}deg)`;
+      stampV.style.opacity = Math.min(1, Math.abs(dy) / 70);
+    }
+  });
+  const end = () => {
+    if (!active) return;
+    active = false;
+    el.classList.remove("dragging");
+    const snapBack = () => { el.style.transition = `transform ${D(450)}ms cubic-bezier(.3,1.6,.5,1)`; el.style.transform = ""; resetStamps(); };
+    if (!mode) { el.style.transform = ""; flip(el); return; }
+    if (mode === "v") { if (Math.abs(dy) > 60) turn(el); snapBack(); return; }
+    const v = Math.abs(dx) / Math.max(1, performance.now() - t0);
+    if (Math.abs(dx) > 110 || v > 0.6) {
+      const dir = Math.sign(dx) || 1;
+      el.style.pointerEvents = "none";
+      el.style.transition = `transform ${D(380)}ms cubic-bezier(.3,.6,.4,1), opacity ${D(380)}ms`;
+      el.style.transform = `translate(${dir * (window.innerWidth * .9)}px, ${dy * .2 + 60}px) rotate(${dir * 35}deg)`;
+      el.style.opacity = "0";
+      setTimeout(() => el.remove(), D(400));
+      current = null;
+      if (view < history.length - 1) step(1, true);
+      else if (pos < order.length) draw();
+      else { placeholder.hidden = false; setPlaceholder("that's the deck!", "Shuffle to play again, or try another pack."); renderDeck(); }
+    } else snapBack();
+  };
+  el.addEventListener("pointerup", end);
+  el.addEventListener("pointercancel", end);
+  el.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); flip(el); } });
+}
+
+function exit(el, dir) {
+  if (!el) return;
+  el.style.pointerEvents = "none";
+  const cur = getComputedStyle(el).transform;
+  const a = el.animate([
+    { transform: cur === "none" ? "none" : cur, opacity: 1 },
+    { transform: `translate(${dir * 80}%, 30px) rotate(${dir * 18}deg)`, opacity: 0 }
+  ], { duration: D(400), easing: "cubic-bezier(.5,0,.75,0)", fill: "forwards" });
+  a.onfinish = () => el.remove();
+}
+
+function draw() {
+  if (pos >= order.length) return;
+  const topLayer = deckEl.querySelector(".layer.top");
+  const from = (topLayer || deckEl).getBoundingClientRect();
+  const card = pack.cards[order[pos++] - 1];
+  history.push(card.id); view = history.length - 1;
+
+  placeholder.hidden = true;
+  exit(current, 1);
+  const el = makeCard(card);
+  play.appendChild(el);
+  current = el;
+  renderDeck();
+
+  const to = el.getBoundingClientRect();
+  const dx = (from.left + from.width / 2) - (to.left + to.width / 2);
+  const dy = (from.top + from.height / 2) - (to.top + to.height / 2);
+  const s = from.width / to.width;
+  const inner = el.querySelector(".inner");
+  inner.style.transition = "none";
+  el.animate([
+    { transform: `translate(${dx}px, ${dy}px) scale(${s}) rotate(-6deg)` },
+    { transform: `translate(${dx * .35}px, ${dy * .35 - 50}px) scale(1.08) rotate(5deg)`, offset: .55 },
+    { transform: "scale(.98) rotate(-1deg)", offset: .85 },
+    { transform: "none" }
+  ], { duration: D(820), easing: "cubic-bezier(.25,.8,.3,1)" });
+  inner.animate([
+    { transform: "rotateY(0deg)" },
+    { transform: "rotateY(0deg)", offset: .3 },
+    { transform: "rotateY(195deg)", offset: .8 },
+    { transform: "rotateY(180deg)" }
+  ], { duration: D(920), easing: "cubic-bezier(.4,.1,.2,1)" });
+  faceUp(el);
+  requestAnimationFrame(() => requestAnimationFrame(() => { inner.style.transition = ""; }));
+}
+
+function step(dir, skipExit) {
+  const target = view + dir;
+  if (target < 0 || target >= history.length) return;
+  view = target;
+  if (!skipExit) exit(current, -dir);
+  const el = makeCard(pack.cards[history[view] - 1]);
+  const inner = el.querySelector(".inner");
+  inner.style.transition = "none";
+  faceUp(el);
+  play.appendChild(el);
+  current = el;
+  el.animate([
+    { transform: `translate(${dir * 60}%, 10px) rotate(${dir * 10}deg)`, opacity: 0 },
+    { transform: "none", opacity: 1 }
+  ], { duration: D(450), easing: "cubic-bezier(.3,1.4,.5,1)" });
+  requestAnimationFrame(() => requestAnimationFrame(() => { inner.style.transition = ""; }));
+  renderDeck();
+}
+
+function restart(quiet) {
+  exit(current, 1); current = null;
+  buildDeck();
+  renderDeck();
+  placeholder.hidden = false;
+  setPlaceholder("your move!", "Swipe a card up off the deck, or tap it.");
+  if (!quiet) { deckEl.classList.remove("shuffle"); void deckEl.offsetWidth; deckEl.classList.add("shuffle"); }
+}
+
+/* Deck gesture: drag the top card toward the table (up on a phone) and let go to draw it. A tap also draws. */
+let deckDrag = null, suppressClick = false;
+deckEl.addEventListener("pointerdown", e => {
+  if (deckEl.disabled || e.button > 0) return;
+  const top = deckEl.querySelector(".layer.top");
+  if (!top) return;
+  suppressClick = false;
+  const d = deckEl.getBoundingClientRect(), p = play.getBoundingClientRect();
+  const vx = (p.left + p.width / 2) - (d.left + d.width / 2), vy = (p.top + p.height / 2) - (d.top + d.height / 2);
+  const len = Math.hypot(vx, vy) || 1;
+  deckDrag = { top, sx: e.clientX, sy: e.clientY, dx: 0, dy: 0, ux: vx / len, uy: vy / len, moved: false, t0: performance.now() };
+  deckEl.setPointerCapture(e.pointerId);
+  top.style.transition = "none";
+});
+deckEl.addEventListener("pointermove", e => {
+  if (!deckDrag) return;
+  const g = deckDrag;
+  g.dx = e.clientX - g.sx; g.dy = e.clientY - g.sy;
+  if (!g.moved && Math.hypot(g.dx, g.dy) > 6) { g.moved = true; g.top.classList.add("dragging"); }
+  if (g.moved) g.top.style.transform = `${g.top.style.getPropertyValue("--t")} translate(${g.dx}px, ${g.dy}px) rotate(${g.dx / 16}deg) scale(1.05)`;
+});
+const deckEnd = () => {
+  if (!deckDrag) return;
+  const g = deckDrag; deckDrag = null;
+  suppressClick = true; setTimeout(() => { suppressClick = false; }, 450);
+  if (!g.moved) { draw(); return; }
+  const proj = g.dx * g.ux + g.dy * g.uy;
+  const v = proj / Math.max(1, performance.now() - g.t0);
+  if (proj > 50 || v > 0.5 || g.dy < -60) { draw(); return; }
+  g.top.classList.remove("dragging");
+  g.top.style.transition = "transform .45s cubic-bezier(.3,1.6,.5,1)";
+  g.top.style.transform = g.top.style.getPropertyValue("--t");
+};
+deckEl.addEventListener("pointerup", deckEnd);
+deckEl.addEventListener("pointercancel", deckEnd);
+deckEl.addEventListener("click", () => { if (suppressClick) { suppressClick = false; return; } draw(); });
+
+$("#draw").addEventListener("click", draw);
+$("#prev").addEventListener("click", () => step(-1));
+$("#next").addEventListener("click", () => step(1));
+$("#turn").addEventListener("click", () => turn(current));
+$("#shuffle").addEventListener("click", () => restart());
+$("#toPacks").addEventListener("click", toShelf);
+document.addEventListener("keydown", e => {
+  if ($("#game").hidden) return;
+  if (e.key === "Escape") { toShelf(); return; }
+  if (e.target.closest && e.target.closest("button") && (e.key === " " || e.key === "Enter")) return;
+  if (e.key === " " || e.key === "Enter") { e.preventDefault(); draw(); }
+  else if (e.key === "ArrowLeft") step(-1);
+  else if (e.key === "ArrowRight") step(1);
+  else if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); turn(current); }
+});
+
+renderShelf();
+</script>
+
+</body>
+</html>
